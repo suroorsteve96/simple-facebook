@@ -23,8 +23,7 @@
             <div class="col-md-7">
                 <div class="jumbotron">
                     <h1 class="display-4">Welcome to simpleFacebook !</h1>
-                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
-                        attention to featured content or information.</p>
+                    <p class="lead">This is a try to make a very simplified facebook and of course need tons of work to improve ... so plz don't be a hard judges :) </p>
                     <p class="lead row justify-content-end">
                         <a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal"
                            data-target="#exampleModalCenter1">Log In</a>
@@ -189,7 +188,7 @@
                     <div class="form-group">
                         <label>Password :</label>
                         <input v-model="users.userPassword" type="password" class="form-control" placeholder="Password">
-                        <label> please check user name or password </label>
+                        <label v-if="!logInWrite"> please check user name or password </label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -340,6 +339,8 @@
                         this.logInValue = false;
                         this.signInValue = false;
                         $('#exampleModalCenter1').modal('hide')
+                    }else{
+                        app.logInWrite=false;
                     }
                 }
 
