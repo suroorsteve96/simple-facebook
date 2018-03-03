@@ -23,7 +23,8 @@
             <div class="col-md-7">
                 <div class="jumbotron">
                     <h1 class="display-4">Welcome to simpleFacebook !</h1>
-                    <p class="lead">This is a try to make a very simplified facebook and of course need tons of work to improve ... so plz don't be a hard judges :) </p>
+                    <p class="lead">This is a try to make a very simplified facebook and of course need tons of work to
+                        improve ... so plz don't be a hard judges :) </p>
                     <p class="lead row justify-content-end">
                         <a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal"
                            data-target="#exampleModalCenter1">Log In</a>
@@ -127,25 +128,28 @@
                         <div class="card-body  " v-for="message in getMessage">
 
 
-                            <p class="card-text text-muted  "
-                               v-if="message.user== users.userName">{{message.user}} </p>
-                            <p class="card-text " v-if="message.user== users.userName">
-                                {{message.message}}
-                                <button type="button" class="close " @click="removeMessage(message._id)">
-                                    <span class="float-right">&times;</span>
-                                </button>
-                            </p>
+                            <div v-if="!(message.user== users.userName)" class="float-right">
+                                <p class="card-text text-muted" v-if="!(message.user== users.userName)">
+                                    {{message.user}} </p>
+                                <p class="card-text " v-if="!(message.user== users.userName)">
+                                    {{message.message}}
+
+                                </p>
+                            </div>
+                            <br>
 
 
-                            <p class="card-text text-muted  " v-if="!(message.user== users.userName)">
-                                {{message.user}}</p>
-                            <p class="card-text  " v-if="!(message.user== users.userName)">
-                                {{message.message}}
-                                <button type="button" class="close " @click="removeMessage(message._id)">
-                                    <span class="float-right">&times;</span>
-                                </button>
-                            </p>
-
+                            <div v-if="(message.user== users.userName)" class="float-left">
+                                <p class="card-text text-muted" v-if="(message.user== users.userName)">
+                                    {{message.user}} </p>
+                                <p class="card-text " v-if="(message.user== users.userName)">
+                                    {{message.message}}
+                                    <button type="button" class="close " @click="removeMessage(message._id)">
+                                        <span class="float-left"> &times; </span>
+                                    </button>
+                                </p>
+                            </div>
+                            <br>
 
                         </div>
 
@@ -339,8 +343,8 @@
                         this.logInValue = false;
                         this.signInValue = false;
                         $('#exampleModalCenter1').modal('hide')
-                    }else{
-                        app.logInWrite=false;
+                    } else {
+                        app.logInWrite = false;
                     }
                 }
 
