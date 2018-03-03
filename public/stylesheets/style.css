@@ -1,0 +1,32 @@
+body {
+
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("https://scontent.fbgt1-1.fna.fbcdn.net/v/t35.0-12/28643301_2435848886640912_1099475684_o.jpg?oh=8f16c07e6c7ab090315a85ea09663478&oe=5A9D28CC");
+    background-size: cover;
+    height: 100%;
+}
+
+.bg-light1{
+    background-color: rgba(255,255,255,0.7);
+    /*color: whitesmoke;*/
+}
+.card-title{
+    color: #0099CC;
+}
+.scrollCard {
+    height: 250px;
+    overflow-y: scroll;
+}
+.card-body{
+    background-color: rgba(0,0,0,0.008)
+}
+.card-img-bottom{
+    height: 200px
+}
+.jumbotron{
+    background-color: rgba(255,255,255,0);
+    color: seashell;
+
+}

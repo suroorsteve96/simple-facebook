@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Simple Facebook</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+</head>
+<body class="h-100">
+
+
+<div id="root" class="h-100">
+
+
+    <div class="container h-100 " v-if=" logInValue">
+        <div class="row justify-content-center h-100 align-items-center">
+            <div class="col-md-7">
+                <div class="jumbotron">
+                    <h1 class="display-4">Welcome to simpleFacebook !</h1>
+                    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra
+                        attention to featured content or information.</p>
+                    <p class="lead row justify-content-end">
+                        <a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal"
+                           data-target="#exampleModalCenter1">Log In</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div v-if=" !logInValue" class="container">
+
+        <div class="row justify-content-center ">
+            <div class="col-md-7 col-10 px-0">
+                <div class="input-group mb-3" v-if="showPostInfo==false">
+                    <input type="text" class="form-control" placeholder="what do you have in mind ?"
+                           @click="showPostInfo=true">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-secondary" type="button">Share</button>
+                    </div>
+                </div>
+                <div class="border p-3 pr-4 mb-3 bg-light mt-3 " v-if="showPostInfo">
+                    <div class="form-group">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Post Information </h5>
+                            <button type="button" class="close" @click="showPostInfo = false;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
+                        </div>
+                        <input v-model="posts.postBody" type="text" class="form-control m-2"
+                               placeholder="whats in your mind ?">
+                        <input v-model="posts.postImage" type="text" class="form-control m-2"
+                               placeholder="your image source">
+                        <button @click="addPost()" class="btn btn-primary ml-3">Share</button>
+                        <button type="button" class="btn btn-secondary " @click="showPostInfo = false;">close
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center   mb-5">
+            <div class="col-10 col-md-7  px-0">
+
+                <div class="card mb-3 " v-for="post in getPosts">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{post.postUser}}</h5>
+                        <p class="card-text"> {{post.postBody}}</p>
+
+                    </div>
+                    <img v-if="post.postImage!=='' " class=" border card-img-bottom img-fluid "
+                         :src="post.postImage">
+
+                    <div class="card-footer p-0">
+                        <div class=" row justify-content-around">
+
+                            <a href="#" class="btn" @click="remove(post._id)">Delete</a>
+                            <a href="#" class="btn" @click="openEditModal(post)">update</a>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="fixed-bottom px-5  ">
+
+            <div class="col-md-3 col-12">
+
+                <button v-if="cardShow==true" type="button" class="btn btn-secondary btn-block" @click="cardShow=false">
+                    Show
+                    Message
+                </button>
+
+
+                <div class="card bg-light " v-if="cardShow==false">
+
+                    <div class="card-header pr-2 bg-info">
+                        <STRONG> Messages</STRONG>
+                        <button type="button" class="close " @click="cardShow=true">
+                            <span class="float-right">&times;</span>
+                        </button>
+                    </div>
+
+
+                    <div class="scrollCard">
+                        <div class="card-body  " v-for="message in getMessage">
+
+
+                            <p class="card-text text-muted  "
+                               v-if="message.user== users.userName">{{message.user}} </p>
+                            <p class="card-text " v-if="message.user== users.userName">
+                                {{message.message}}
+                                <button type="button" class="close " @click="removeMessage(message._id)">
+                                    <span class="float-right">&times;</span>
+                                </button>
+                            </p>
+
+
+                            <p class="card-text text-muted  " v-if="!(message.user== users.userName)">
+                                {{message.user}}</p>
+                            <p class="card-text  " v-if="!(message.user== users.userName)">
+                                {{message.message}}
+                                <button type="button" class="close " @click="removeMessage(message._id)">
+                                    <span class="float-right">&times;</span>
+                                </button>
+                            </p>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="input-group ">
+                        <input type="text" v-model="messages.message" class="form-control"
+                               placeholder="type your message">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-info" type="button" @click="addMessage">send</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">SingIn</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label> User Name :</label>
+                        <input v-model="users.userName" type="text" class="form-control"
+                               placeholder="enter your user name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password :</label>
+                        <input v-model="users.userPassword" type="password" class="form-control" placeholder="Password">
+                        <label> please check user name or password </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary btn-block" @click="checkUser()">Login</button>
+                    <small>don't have an account? plz register <a href="#" data-toggle="modal"
+                                                                  data-target="#exampleModalCenter2"
+                                                                  data-dismiss="modal"> here</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Register </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label> User Name :</label>
+                        <input v-model="users.userName" type="text" class="form-control"
+                               placeholder="enter your user name">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label> phone number :</label>
+                        <input v-model="users.userNumber" type="number" class="form-control"
+                               placeholder="enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label>Password :</label>
+                        <input v-model="users.userPassword" type="password" class="form-control" placeholder="Password">
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <button class="btn btn-primary btn-block" @click="addUser()">Register</button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit cartoon</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>post body </label>
+                        <input v-model="editingPost.postBody" type="text" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image url</label>
+                        <input v-model="editingPost.postImage" type="text" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+
+                    <button type="button" class="btn btn-primary" @click="editPost">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    var app = new Vue({
+        el: "#root",
+        data: {
+
+            logInValue: true,
+            logInWrite: true,
+            showPostInfo: false,
+            cardShow: true,
+            getMessage: [],
+            getUsers: [],
+            getPosts: [],
+            editingPost: {
+                postBody: "",
+                postImage: ""
+            },
+            users: {
+                userPassword: "",
+                userName: "",
+                userNumber: ""
+            },
+            posts: {
+                postUser: "",
+                postBody: "",
+                postImage: "",
+                date: Date()
+
+            },
+            messages: {
+                user: "",
+                message: ""
+            }
+        },
+        methods: {
+
+            openEditModal: function (editPost) {
+                this.editingPost = editPost
+                $('#editModal').modal('show')
+            },
+
+            editPost: function () {
+                axios.put('/api/posts', {post: this.editingPost}).then(function (response) {
+                    axios.get('/api/posts').then(function (response) {
+                        app.getPosts = response.data;
+                    })
+                })
+                $('#editModal').modal('hide');
+
+            },
+
+            checkUser: function () {
+                axios.get('/api/userAth').then(function (response) {
+                    app.getUsers = response.data;
+                });
+                for (i = 0; i < this.getUsers.length; i++) {
+                    if (app.getUsers[i].userName == app.users.userName && app.getUsers[i].userPassword == app.users.userPassword) {
+                        app.messages.user = app.getUsers[i].userName;
+                        app.posts.postUser = app.getUsers[i].userName;
+                        this.logInValue = false;
+                        this.signInValue = false;
+                        $('#exampleModalCenter1').modal('hide')
+                    }
+                }
+
+            },
+            removeMessage: function (id) {
+                axios.delete('/api/message', {
+                    params: {
+                        id: id
+                    }
+                })
+                axios.get('/api/message').then(function (response) {
+                    app.getMessage = response.data;
+
+                })
+            },
+            addMessage: function () {
+                axios.post('/api/message', {messages: this.messages});
+                axios.get('/api/message').then(function (response) {
+                    app.getMessage = response.data;
+                    app.messages.message = "";
+
+                });
+
+            },
+            addPost: function () {
+                axios.post('/api/posts', {posts: this.posts});
+                axios.get('/api/posts').then(function (response) {
+                    app.getPosts = response.data;
+
+                });
+                app.showPostInfo = false;
+            },
+            remove: function (id) {
+                console.log(id);
+                axios.delete('/api/posts', {
+                    params: {
+                        id: id,
+                    }
+                })
+                axios.get('/api/posts').then(function (response) {
+                    app.getPosts = response.data;
+
+                })
+            },
+            addUser: function () {
+
+                axios.post('/api/userAth', {users: this.users});
+                axios.get('/api/userAth').then(function (response) {
+                    app.getUsers = response.data;
+                    app.users.userPassword = "";
+                    app.users.userName = "";
+                    app.users.userNumber = "";
+                    $('#exampleModalCenter2').modal('hide')
+
+
+                });
+            }
+
+
+        }
+    });
+    axios.get('/api/posts').then(function (response) {
+        app.getPosts = response.data;
+
+    })
+    axios.get('/api/message').then(function (response) {
+        app.getMessage = response.data;
+
+    });
+
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
