@@ -283,6 +283,17 @@
 
 
 <script>
+    function messagReload() {
+        axios.get('/api/message').then(function (response) {
+            app.getMessage = response.data;
+        });
+    }
+  function postReload (){
+        axios.get('/api/posts').then(function (response) {
+            app.getPosts = response.data;
+
+        });
+    }
     var app = new Vue({
         el: "#root",
         data: {
@@ -324,10 +335,9 @@
 
             editPost: function () {
                 axios.put('/api/posts', {post: this.editingPost}).then(function (response) {
-                    axios.get('/api/posts').then(function (response) {
-                        app.getPosts = response.data;
-                    })
+
                 })
+                postReload();
                 $('#editModal').modal('hide');
 
             },
@@ -355,26 +365,18 @@
                         id: id
                     }
                 })
-                axios.get('/api/message').then(function (response) {
-                    app.getMessage = response.data;
-
-                })
+                messagReload();
             },
             addMessage: function () {
-                axios.post('/api/message', {messages: this.messages});
-                axios.get('/api/message').then(function (response) {
-                    app.getMessage = response.data;
-                    app.messages.message = "";
-
-                });
+                if( !(app.messages.message == "")) {
+                    axios.post('/api/message', {messages: this.messages});
+                    messagReload();
+                }
 
             },
             addPost: function () {
                 axios.post('/api/posts', {posts: this.posts});
-                axios.get('/api/posts').then(function (response) {
-                    app.getPosts = response.data;
-
-                });
+              postReload();
                 app.showPostInfo = false;
             },
             remove: function (id) {
@@ -399,7 +401,6 @@
                     app.users.userNumber = "";
                     $('#exampleModalCenter2').modal('hide')
 
-
                 });
             }
 
@@ -408,11 +409,9 @@
     });
     axios.get('/api/posts').then(function (response) {
         app.getPosts = response.data;
-
     })
     axios.get('/api/message').then(function (response) {
         app.getMessage = response.data;
-
     });
 
 </script>
